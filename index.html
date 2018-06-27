@@ -13,9 +13,10 @@
 
 	<!-- template for reservation-list -->
 	<script id="reservation-template" type="text/x-handlebars-template">
-		<tr>
+		<tr data-id="{{reservationId}}">
 			<td>{{name}}</td>
 			<td>{{day}}</td>
+			<td><a href="#" class="cancel">Cancel</a></td>
 		</tr>
 	</script>
 
@@ -67,18 +68,10 @@
 			<thead>
 				<th>Name</th>
 				<th>Day</th>
+				<th></th>
 				
 			</thead>
-			
-			<tbody class="reservation-list">
-				<script id="reservation-template" type="text/x-handlebars-template">
-				<tr data-id="{{reservationId}}">
-                   <td> {{name}} </td>
-                   <td> {{day}} </td> 
-                   <td><a href="#" class="cancel">Cancel</a></td>
-                </tr>
-                </script>
-			</tbody>		
+			<tbody class="reservation-list"></tbody>		
 		</table>
 	</div>
 

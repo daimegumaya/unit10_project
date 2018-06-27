@@ -22,7 +22,7 @@ $('.reservation-day li').on('click', function() {
 });
 
 // Add sbmit event to reservation form
-$('.reservation-form').on('submit', function(event) {
+$('.reservations').on('submit', function(event) {
   // Prevent the default action when form submit
   event.preventDefault();
   // Add user input 'name' with getting value to the 'reservationData' object
@@ -39,14 +39,14 @@ function getReservations() {
     // get all reservations in the results from the database
     var allReservations = results.val();
     // remove any reservations the are that displaied current reservations list
-    $('.reservation-list').empty();
+    $('reservations').empty();
     // iterate through each reservation from database 
     for (var reservation in allReservations) {
     // create an object literal with the data we'll pass to Handlebars
       var context = {
       name: allReservations[reservation].name,
       day: allReservations[reservation].day,
-      reservationID: reservation
+      reservationId: reservation
       };
       // get html from Hndlebars template
       var source = $("#reservation-template").html();
@@ -64,14 +64,15 @@ function getReservations() {
 getReservations();
 
 // Click event to delete reservations
-$('.reservations').on('click', '.cancel', function (e){
-  // find ID for the comment we want to update
-  var id = $(e.target).parent().data('id');
+$('.cancel').on('click', function(event){
+  event.preventDefault();
+  // find ID for the resevation we want to delete
+  var id = $(event.target).parent().data('id');
 
-  // find comment whose objectId is equal to the id we're searching with
-  var reservationReference = database.ref('reservations/' + id);
+  // find resevation data whose objectId is equal to the id we're searching with
+  var reservation = database.ref('reservations/' + id);
 
-  reservationReference.remove()
+  reservation.remove()
 });
 
 // initialize map
@@ -107,7 +108,7 @@ function initMap() {
     }  
   ];
 
-  var styledMapOptions = { name: '株式会社WEB企画' }
+  var styledMapOptions = { name: '' }
   var sampleType = new google.maps.StyledMapType(styleOptions, styledMapOptions);
   map.mapTypes.set('sample', sampleType);
   map.setMapTypeId('sample');
