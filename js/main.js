@@ -1,3 +1,6 @@
+console.log("js works")
+$(function() {
+
   // Initialize Firebase
   var config = {
     apiKey: "AIzaSyDoGRo6zw9IucW-56beYd34kcZu2kpPOLc",
@@ -22,24 +25,26 @@ $('.reservation-day li').on('click', function() {
 });
 
 // Add sbmit event to reservation form
-$('.reservations').on('submit', function(event) {
+$('.reservation-button').on('click', function(event) {
   // Prevent the default action when form submit
   event.preventDefault();
   // Add user input 'name' with getting value to the 'reservationData' object
-  reservationData.name = $('.reservation-name').val()
+  reservationData.name = $('.reservation-name').val();
+  $('.reservation-name').val('')
   // create section for reservation data in the database
   var reservationReference = database.ref('reservations');
   // Post reservation information data to Firebase database
+  //reservationReference.push(reservationData);
   reservationReference.push(reservationData);
 });
-  // Create reservation function
-function getReservations() {
+// Create reservation function
+//function getReservations() {
   // listen any changes to the database 
-  database.ref('reservations').on('value', function(results) {
+  database.ref('reservations').on('value', function(snapshot) {
     // get all reservations in the results from the database
-    var allReservations = results.val();
+    //var reservationList = $('.reservation-list');
+    var allReservations = snapshot.val();
     // remove any reservations the are that displaied current reservations list
-    $('reservations').empty();
     // iterate through each reservation from database 
     for (var reservation in allReservations) {
     // create an object literal with the data we'll pass to Handlebars
@@ -53,26 +58,32 @@ function getReservations() {
       // compile template
       var template = Handlebars.compile(source);
       // 
-      var reservationListItem = template(context);
+      var reservationItem = template(context);
       // append the newly created list item to the list
-      $('.reservation-list').append(reservationListItem);
-    }
+      $('.reservation-list').empty();
       
-  });
-}
+      $('.reservation-list').append(reservationItem);
+      //console.log($('.reservation-list'))
+      //console.log($('reservationList').empty())
+      //console.log($('.cancel'))
+      // Click event to delete reservations
+      $('.cancel a').on('click', function(event){
+       event.preventDefault();
+        // find ID for the resevation we want to delete
+       var id = $(event.target).parent().parent().data('id');
+        //console.log($(event.target).parent().parent().data('id'))
+            // find resevation data whose objectId is equal to the id we're searching with
+       var reservation = database.ref('reservations/' + id);
+        //console.log(reservation)
+       reservation.remove()
+        //console.log(reservation.remove())
+      });
+    }
+  });     
+//}
 // When page loads, get reservations
-getReservations();
+//getReservations();
 
-// Click event to delete reservations
-$('.cancel').on('click', function(event){
-  event.preventDefault();
-  // find ID for the resevation we want to delete
-  var id = $(event.target).parent().data('id');
-
-  // find resevation data whose objectId is equal to the id we're searching with
-  var reservation = database.ref('reservations/' + id);
-
-  reservation.remove()
 });
 
 // initialize map
@@ -119,5 +130,3 @@ var marker = new google.maps.Marker({
     title: 'Monks Café'
   });
 }
-
-
